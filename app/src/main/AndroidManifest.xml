@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.institutoserpis.ejerciciofinalcebe">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="Viajes SA"
+        android:logo="@drawable/logoviajes"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppThemeLogin">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MenuActivity"
+            android:theme="@style/AppThemeNoActionBar" />
+        <activity android:name=".UsuarioViewFragment" />
+        <activity android:name=".UsuarioFragment" />
+        <activity android:name=".ListaClasesviajeFragment" />
+        <activity android:name=".ClaseviajeViewFragment" />
+        <activity android:name=".ClaseviajeFragment" />
+        <activity android:name=".ListaCiudadesFragment" />
+        <activity android:name=".CiudadViewFragment" />
+        <activity android:name=".CiudadFragment"></activity>
+    </application>
+
+</manifest>

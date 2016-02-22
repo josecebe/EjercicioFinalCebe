@@ -1,0 +1,10 @@
+<resources>
+    <string-array name="spinnerCiudades">
+        <item>Seleccione una ciudad</item>
+        <item>Barcelona</item>
+        <item>Bilbao</item>
+        <item>Madrid</item>
+        <item>Valencia</item>
+        <item>Zaragoza</item>
+    </string-array>
+</resources>

@@ -1,0 +1,7 @@
+<resources>
+    <string-array name="spinnerClaseviaje">
+        <item>Seleccione una clase de viaje</item>
+        <item>Turista</item>
+        <item>Business</item>
+    </string-array>
+</resources>

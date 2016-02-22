@@ -1,0 +1,26 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.hmkcode.mongoz.MainActivity" >
+
+    <group android:checkableBehavior="all">
+        <item
+            android:id="@+id/tablaViaje"
+            android:icon="@drawable/ic_directions_railway_black_24dp"
+            android:title="Tabla viajes" />
+        <item
+            android:id="@+id/tablaClaseViaje"
+            android:icon="@drawable/ic_class_black_24dp"
+            android:title="Tabla clase viaje" />
+        <item
+            android:id="@+id/tablaUsuario"
+            android:icon="@drawable/ic_people_black_24dp"
+            android:title="Tabla usuarios"/>
+
+        <item
+            android:id="@+id/tablaCiudad"
+            android:icon="@drawable/ic_location_city_black_24dp"
+            android:title="Tabla ciudades"/>
+    </group>
+
+</menu>

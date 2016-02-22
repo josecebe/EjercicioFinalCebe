@@ -1,0 +1,91 @@
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/scroll">
+
+<RelativeLayout
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:elevation="5dp"
+        android:id="@+id/nav"
+        android:layout_marginTop="?attr/actionBarSize">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/fondotren"
+            android:id="@+id/fotoTren"
+            android:scaleType="centerCrop" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_below="@id/nav"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No hay viajes para mostrar"
+            android:textStyle="italic"
+            android:textSize="@dimen/abc_text_size_medium_material"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/textViewNoViajes"
+            android:visibility="gone"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="60dp"
+            android:paddingBottom="60dp"/>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/listViewViajes">
+        </ListView>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/botonera"
+            android:padding="16dp">
+            <Button
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:id="@+id/previousPage"
+                android:text="Anterior"
+                android:textColor="#fff"
+                 /><!--android:onClick="previousPage"-->
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:id="@+id/nextPage"
+                android:text="Siguiente"
+                android:textColor="#fff"
+                 /><!--android:onClick="nextPage"-->
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageButton
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="175dp"
+        android:layout_width="66dp"
+        android:layout_height="66dp"
+        android:background="@drawable/circle"
+        android:src="@drawable/ic_add_white_36dp"
+        android:id="@+id/imageButton"
+        android:elevation="5dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        /><!--android:onClick="newViaje"-->
+</RelativeLayout>
+</ScrollView>

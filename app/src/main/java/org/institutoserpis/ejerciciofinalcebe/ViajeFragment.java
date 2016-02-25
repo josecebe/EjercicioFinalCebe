@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
@@ -22,12 +21,9 @@ import android.widget.Toast;
 import org.institutoserpis.ejerciciofinalcebe.Tables.Viaje;
 
 public class ViajeFragment extends Fragment {
-    static public final String packagename = ListaViajesFragment.class.getPackage().getName();
-    DrawerLayout drawerLayout;
     View view;
 
     SQLiteHelper helper;
-    MenuActivity menuActivity;
 
     String id = "0";
     String ciudadOrigen = "";
@@ -43,8 +39,6 @@ public class ViajeFragment extends Fragment {
     int numeroPasajeros = 1;
     boolean precioVuelta = false;
 
-    int page = 1;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.activity_viaje_fragment, container, false);
@@ -53,17 +47,14 @@ public class ViajeFragment extends Fragment {
         Spinner spinnerOrigen = (Spinner) view.findViewById(R.id.spinnerOrigen);
         Spinner spinnerDestino = (Spinner) view.findViewById(R.id.spinnerDestino);
 
-
-
-
-
-
+        // Cargamos en los spinners spinnerOrigen y spinnerDestino el nombre de las ciudades de la tabla ciudad
         Cursor c = helper.getNombreCiudades();
         SimpleCursorAdapter adapter2 = new SimpleCursorAdapter(view.getContext(),android.R.layout.simple_spinner_item,c,new String[] {"nombre"},    new int[] {android.R.id.text1});
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerOrigen.setAdapter(adapter2);
         spinnerDestino.setAdapter(adapter2);
 
+        // Cargamos en el spinner spinnerClase las descripción de las clases de viaje de la tabla claseviaje
         final Spinner spinnerClase = (Spinner) view.findViewById(R.id.spinnerClase);
         c = helper.getClaseViajes();
         adapter2 = new SimpleCursorAdapter(view.getContext(),android.R.layout.simple_spinner_item,c,new String[] {"descripcion"},    new int[] {android.R.id.text1});
@@ -71,6 +62,7 @@ public class ViajeFragment extends Fragment {
         spinnerClase.setAdapter(adapter2);
 
         String modo = "";
+        // Cargamos el bundle de datos
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             modo = bundle.getString("modo");
@@ -78,14 +70,18 @@ public class ViajeFragment extends Fragment {
 
         ImageView imageView = (ImageView) view.findViewById(R.id.imageButtonSave);
 
+        // Si el modo es "edit"
         if (modo.equals("edit")) {
             TextView label = (TextView) view.findViewById(R.id.label);
             label.setText("Editar viaje");
 
+            // Imprimirmos en pantalla todos los datos del viaje que estamos editando
             printViajeData(bundle);
 
+            // Al hacer click en el botón guardar...
             imageView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+                    // Estamos editando un viaje ya existente
                     editViaje();
                 }
             });
@@ -93,23 +89,33 @@ public class ViajeFragment extends Fragment {
             TextView label = (TextView) view.findViewById(R.id.label);
             label.setText("Nuevo viaje");
 
+            // Al hacer click en el botón guardar...
             imageView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+                    // Estamos creando un nuevo viaje
                     newViaje();
                 }
             });
         }
 
+        // Al seleccionar un item del spinner de clase de viaje...
         spinnerClase.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (spinnerClase.getSelectedItem().toString().equals("Turista")) {
+                Cursor colCur=(Cursor)spinnerClase.getSelectedItem();
+                String clase = colCur.getString(colCur.getColumnIndex("descripcion"));
+
+                // Si la clase es turista, el precio de la clase serán 10€
+                if (clase.equals("Turista")) {
                     precioClase = 10;
                     calcularPrecioFinal();
-                }
-
-                if (spinnerClase.getSelectedItem().toString().equals("Business")) {
+                } else if (clase.equals("Business")) {
+                    // Si la clase es business, el precio serán 30€
                     precioClase = 30;
+                    calcularPrecioFinal();
+                } else {
+                    // Y si no es ningun de los anteriores, el precio será 20€
+                    precioClase = 20;
                     calcularPrecioFinal();
                 }
             }
@@ -119,31 +125,41 @@ public class ViajeFragment extends Fragment {
             }
         });
 
+        // Al pulsar el botón restar pasajero (-)
         Button buttonRestar = (Button) view.findViewById(R.id.buttonRestarPasajero);
         buttonRestar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Restamos un pasajero
                 restarPasajero();
             }
         });
 
+        // Al pulsar el botón sumar pasajero (-)
         Button buttonSumar = (Button) view.findViewById(R.id.buttonSumarPasajero);
         buttonSumar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Sumamos un pasajero
                 sumarPasajero();
             }
         });
 
+        // Al pulsar el switchCompat de ida y vuelta
         final SwitchCompat switchCompat = (SwitchCompat) view.findViewById(R.id.switchVuelta);
         switchCompat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Si está "pulsado"...
                 if (switchCompat.isChecked()) {
+                    // Deberá calcularse el precio sumando la vuelta
                     precioVuelta = true;
+                    // Calculamos el precio
                     calcularPrecioFinal();
                 } else {
+                    // Deberá calcularse sin sumar la vuelta
                     precioVuelta = false;
+                    // Calculamos el precio
                     calcularPrecioFinal();
                 }
             }
@@ -152,7 +168,9 @@ public class ViajeFragment extends Fragment {
         return view;
     }
 
+    // Método para imprimir en pantalla los datos del viaje a editar
     private void printViajeData(Bundle bundle) {
+        // Guardamos en las variables los datos del bundle
         if (bundle != null) {
             id = bundle.getString("id");
             ciudadOrigen = bundle.getString("ciudadOrigen");
@@ -165,6 +183,7 @@ public class ViajeFragment extends Fragment {
             numeroPasajeros = Integer.parseInt(pasajeros);
         }
 
+        // Imprimimos en pantalla...
         TextView textViewId = (TextView) view.findViewById(R.id.textViewId);
         textViewId.setText(id);
 
@@ -189,6 +208,7 @@ public class ViajeFragment extends Fragment {
         numeroPasajeros = numPasajeros;
         Button buttonRestarPasajero = (Button) view.findViewById(R.id.buttonRestarPasajero);
         Button buttonSumarPasajero = (Button) view.findViewById(R.id.buttonSumarPasajero);
+
         if (numPasajeros < 2) {
             buttonRestarPasajero.setEnabled(false);
             buttonSumarPasajero.setEnabled(true);
@@ -209,10 +229,13 @@ public class ViajeFragment extends Fragment {
             switchCompat.setChecked(true);
         }
 
+        // Calculamos el precio final
         calcularPrecioFinal();
     }
 
+    // Método para guardar los cambios de un viaje editado
     private void editViaje() {
+        // Recogemos los datos
         TextView textViewId = (TextView) view.findViewById(R.id.textViewId);
         id = textViewId.getText().toString();
 
@@ -248,6 +271,7 @@ public class ViajeFragment extends Fragment {
             vuelta = "0";
         }
 
+        // Validamos los datos recogidos
         if (!validarDatos()) {
             return;
         }
@@ -265,14 +289,16 @@ public class ViajeFragment extends Fragment {
         viaje.setVuelta(Integer.parseInt(vuelta));
         viaje.setPrecio(Integer.parseInt(precio));
 
+        // Editamos el viaje con los datos recogidos anteriormente
         helper.setViaje(viaje);
 
+        // Eliminamos el fragment del viaje editado
         getFragmentManager().popBackStack();
     }
 
+    // Método para crear un nuevo viaje
     private void newViaje() {
-
-
+        // Recogemos los datos...
         Spinner spinnerOrigen = (Spinner) view.findViewById(R.id.spinnerOrigen);
         Cursor colCur=(Cursor)spinnerOrigen.getSelectedItem();
         String ciudad = colCur.getString(colCur.getColumnIndex("nombre"));
@@ -305,6 +331,7 @@ public class ViajeFragment extends Fragment {
             vuelta = "0";
         }
 
+        // Validamos los datos recogidos
         if (!validarDatos()) {
             return;
         }
@@ -319,12 +346,13 @@ public class ViajeFragment extends Fragment {
         viaje.setVuelta(Integer.parseInt(vuelta));
         viaje.setPrecio(Integer.parseInt(precio));
 
+        // Creamos un nuevo viaje con los datos recogidos anteriormente
         id = Long.toString(helper.setViaje(viaje));
 
-
-
+        // Eliminamos el fragment del nuevo viaje
         getActivity().getSupportFragmentManager().popBackStack();
 
+        // Cargamos la vista detallada del viaje creado
         FragmentManager fragmentManager;
         FragmentTransaction fragmentTransaction;
 
@@ -341,6 +369,7 @@ public class ViajeFragment extends Fragment {
         fragmentTransaction.commit();
     }
 
+    // Método para sumar un pasajero
     public void sumarPasajero() {
         TextView textViewPasajeros = (TextView) view.findViewById(R.id.textViewPasajeros);
         int numPasajeros = Integer.parseInt(textViewPasajeros.getText().toString());
@@ -369,6 +398,7 @@ public class ViajeFragment extends Fragment {
         calcularPrecioFinal();
     }
 
+    // Metodo para restar un pasajero
     public void restarPasajero() {
         TextView textViewPasajeros = (TextView) view.findViewById(R.id.textViewPasajeros);
         int numPasajeros = Integer.parseInt(textViewPasajeros.getText().toString());
@@ -396,6 +426,7 @@ public class ViajeFragment extends Fragment {
         calcularPrecioFinal();
     }
 
+    // Método para seleccionar un elemento del spinner spin, cuyo texto es text y su columna de la BBDD es column
     public void setSpinText(Spinner spin, String text, String column)
     {
         for(int i= 0; i < spin.getAdapter().getCount(); i++)
@@ -411,6 +442,7 @@ public class ViajeFragment extends Fragment {
 
     }
 
+    // Método para calcular el precio final
     private void calcularPrecioFinal() {
         if (precioVuelta) {
             precioFinal = ((30 + precioClase) * numeroPasajeros) * 2;
@@ -422,10 +454,12 @@ public class ViajeFragment extends Fragment {
         editTextPrecio.setText(Integer.toString(precioFinal) + " €");
     }
 
+    // Método para validar los datos introducidos
     private boolean validarDatos() {
         int idOrigen = helper.getId("ciudad", "id", ciudadOrigen);
         if (idOrigen < 1) {
             showToast("La ciudad de origen introducida no es válida");
+            // Devolvemos false para romper la ejecución
             return false;
         }
 
@@ -465,6 +499,7 @@ public class ViajeFragment extends Fragment {
             return false;
         }
 
+        // Devuelve true para no romper la ejecución
         return true;
     }
 

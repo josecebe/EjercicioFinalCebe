@@ -28,16 +28,20 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
+        // Cargamos el navigation view y el toolbar
         setupNavigationView();
         setupToolbar();
 
+        // Cuando un item del navigation view es seleccionado...
         NavigationView view = (NavigationView) findViewById(R.id.navigation_view);
         view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.tablaViaje:
+                        // Cerramos el navigation view
                         drawerLayout.closeDrawers();
+                        // Cargamos el fragment 0
                         setFragment(0);
                         return true;
                     case R.id.tablaClaseViaje:
@@ -57,6 +61,7 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
+        // Por defecto cargamos el fragment 0 (Lista de viajes)
         setFragment(0);
     }
 
@@ -65,6 +70,8 @@ public class MenuActivity extends AppCompatActivity {
         super.onResume();
 
     }
+
+    // Método para cargar el toolbar
     private void setupToolbar(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -74,23 +81,28 @@ public class MenuActivity extends AppCompatActivity {
         ab.setDisplayHomeAsUpEnabled(true);
     }
 
+    // Método para cargar el navigation view
     private void setupNavigationView(){
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
     }
 
+    // Cuando se pulsa el botón menú
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                // Se abre el navigation view
                 drawerLayout.openDrawer(GravityCompat.START);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    // Método para cargar los fragmentos
     public void setFragment(int position) {
         FragmentTransaction fragmentTransaction;
         switch (position) {
+            // Cargando fragmento Lista de viajes
             case 0:
                 fragmentManager = getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
@@ -99,6 +111,7 @@ public class MenuActivity extends AppCompatActivity {
                 fragmentTransaction.addToBackStack("ListaViajesFragment");
                 fragmentTransaction.commit();
                 break;
+            // Cargando fragmento Lista clases de viaje
             case 1:
                 fragmentManager = getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
@@ -107,6 +120,7 @@ public class MenuActivity extends AppCompatActivity {
                 fragmentTransaction.addToBackStack("ListaClasesviajeFragment");
                 fragmentTransaction.commit();
                 break;
+            // Cargando fragmento Lista de usuarios
             case 2:
                 fragmentManager = getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
@@ -115,6 +129,7 @@ public class MenuActivity extends AppCompatActivity {
                 fragmentTransaction.addToBackStack("ListaUsuariosFragment");
                 fragmentTransaction.commit();
                 break;
+            // Cargando fragmento Lista de ciudades
             case 3:
                 fragmentManager = getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
@@ -126,11 +141,15 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
+    // Cuando se pulsa el botón atrás...
     @Override
     public void onBackPressed(){
+        // Y hay fragmentos "cargados"...
         if (fragmentManager.getBackStackEntryCount() > 0) {
+            // Se cierra el último fragment
             fragmentManager.popBackStack();
         } else {
+            // Si sólo hay un fragmento... se cierra la actividad actual (se cierra MenuAtivity, y por lo tanto también se cierra la aplicación)
             super.onBackPressed();
         }
     }

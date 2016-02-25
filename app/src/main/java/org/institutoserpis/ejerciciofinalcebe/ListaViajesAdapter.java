@@ -33,6 +33,7 @@ public class ListaViajesAdapter extends ArrayAdapter {
         int res;
 
         CircleImageView circleImageView = (CircleImageView)  item.findViewById(R.id.imageCiudad);
+        // Obtenemos el identificador del drawable con nombre datos.get(position).getFotoDestino()
         res = context.getResources().getIdentifier(datos.get(position).getFotoDestino(), "drawable", context.getPackageName());
         circleImageView.setImageResource(res);
 
@@ -41,8 +42,10 @@ public class ListaViajesAdapter extends ArrayAdapter {
 
         TextView textViewDescripcion = (TextView) item.findViewById(R.id.descripcion);
         if (datos.get(position).getVuelta() == 0) {
+            // Si es un viaje sin ida y vuelta
             textViewDescripcion.setText("Clase " + datos.get(position).getNombreClase() + ", " + datos.get(position).getPasajeros() + " pasajeros. Vuelta: no");
         } else {
+            // Si es un viaje con ida y vuelta
             textViewDescripcion.setText("Clase " + datos.get(position).getNombreClase() + ", " + datos.get(position).getPasajeros() + " pasajeros. Vuelta: sí");
         }
 

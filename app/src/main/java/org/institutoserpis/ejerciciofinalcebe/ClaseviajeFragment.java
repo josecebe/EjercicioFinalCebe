@@ -98,6 +98,10 @@ public class ClaseviajeFragment extends Fragment {
         EditText editTextDescripcion = (EditText) view.findViewById(R.id.editTextDescripcion);
         descripcion = editTextDescripcion.getText().toString();
 
+        if (!validarDatos()) {
+            return;
+        }
+
         Claseviaje claseviaje = new Claseviaje();
 
         claseviaje.setDescripcion(descripcion);
@@ -123,6 +127,11 @@ public class ClaseviajeFragment extends Fragment {
     }
 
     private boolean validarDatos() {
+        if (descripcion.length() < 1) {
+            showToast("Debe introducir una descripción");
+            return false;
+        }
+
         return true;
     }
 

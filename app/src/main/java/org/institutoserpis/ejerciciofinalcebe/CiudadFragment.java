@@ -119,12 +119,17 @@ public class CiudadFragment extends Fragment {
         foto = null;
         s_foto = null;
 
+        if (!validarDatos()) {
+            return;
+        }
+
         Ciudad ciudad = new Ciudad();
 
         ciudad.setNombre(nombre);
         ciudad.setDiminutivo(diminutivo);
         ciudad.setFoto(foto);
         ciudad.setSFoto(s_foto);
+
 
         id = Long.toString(helper.setCiudad(ciudad));
 
@@ -147,6 +152,16 @@ public class CiudadFragment extends Fragment {
     }
 
     private boolean validarDatos() {
+        if (nombre.length() < 1) {
+            showToast("Debe introducir un nombre");
+            return false;
+        }
+
+        if (diminutivo.length() < 1) {
+            showToast("Debe introducir un diminutivo");
+            return false;
+        }
+
         return true;
     }
 

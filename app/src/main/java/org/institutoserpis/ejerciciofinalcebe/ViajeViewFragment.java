@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import org.institutoserpis.ejerciciofinalcebe.Tables.Viaje;
 
 public class ViajeViewFragment extends Fragment {
     static public final String packagename = ListaViajesFragment.class.getPackage().getName();
-    DrawerLayout drawerLayout;
     View view;
 
     SQLiteHelper helper;
@@ -32,14 +30,11 @@ public class ViajeViewFragment extends Fragment {
     String vueltaStr = "";
     String precioStr = "";
 
-    TextView textViewOrigen;
-
-    int page = 1;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.activity_viaje_view_fragment, container, false);
 
+        // Si se pulsa el botón Editar...
         ImageButton imageButtonEdit = (ImageButton) view.findViewById(R.id.imageButton);
         imageButtonEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,18 +45,26 @@ public class ViajeViewFragment extends Fragment {
 
         helper = new SQLiteHelper(getActivity(), "DBCebe", null, 1);
 
+        // Obtenemos el bundle de datos
         Bundle bundle = this.getArguments();
+        // Si no es nulo...
         if (bundle != null) {
+            // Guardamos en la variable id el parámetro id del bundle
             id = Integer.toString(bundle.getInt("id"));
         }
 
+        // Cargamos los datos del viaje con id (id)
         loadViaje(Integer.parseInt(id));
 
         return view;
     }
 
+    // Método que se encarga de imprimir en pantalla los datos del viaje con id (id)
     private void loadViaje(int id) {
+        // Hacemos la consulta a la BBDD para obtener el viaje con id (id)
         Viaje viaje = helper.getViaje(id);
+
+        // Obtenemos los datos de las claves ajenas
         Claseviaje claseviaje = helper.getClaseviaje(viaje.getId_claseviaje());
         Ciudad ciudadOrigen = helper.getCiudad(viaje.getId_ciudad_1());
         Ciudad ciudadDestino = helper.getCiudad(viaje.getId_ciudad_2());
@@ -75,6 +78,7 @@ public class ViajeViewFragment extends Fragment {
             imageViewFoto.setImageResource(res);
         } catch (Exception e) {}
 
+        // Imprimimos en pantalla los datos
         TextView textViewOrigen = (TextView) view.findViewById(R.id.textViewOrigen);
         ciudadOrigenStr = ciudadOrigen.getNombre();
         textViewOrigen.setText(ciudadOrigenStr);
@@ -109,6 +113,7 @@ public class ViajeViewFragment extends Fragment {
         }
     }
 
+    // Método para cargar el fragment para la edición de un viaje
     public void editViaje() {
         FragmentManager fragmentManager;
         FragmentTransaction fragmentTransaction;
@@ -117,6 +122,7 @@ public class ViajeViewFragment extends Fragment {
         fragmentTransaction = fragmentManager.beginTransaction();
 
         ViajeFragment viajeFragment = new ViajeFragment();
+        // Creamos un bundle de datos con toda la información del viaje a editar
         Bundle bundle = new Bundle();
         bundle.putString("modo", "edit");
         bundle.putString("id", id);
@@ -128,12 +134,10 @@ public class ViajeViewFragment extends Fragment {
         bundle.putString("vuelta", vueltaStr);
         viajeFragment.setArguments(bundle);
 
+        // Reemplazamos el fragment actual por el de ViajeFragment
         fragmentTransaction.replace(R.id.fragment, viajeFragment, "ViajeFragment");
+        // Lo añadimos al back stack
         fragmentTransaction.addToBackStack("ViajeFragment");
         fragmentTransaction.commit();
-    }
-
-    public void showToast(String text) {
-        /*Toast.makeText(this, text, Toast.LENGTH_SHORT).show();*/
     }
 }
